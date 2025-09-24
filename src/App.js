@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import Dashboard from './components/Dashboard';
 import FeedbackTable from './components/FeedbackTable';
 import Stats from './components/Stats';
-import NotFound from './components/NotFound';
 import Diagnostics from './components/Diagnostics';
 import { getAllFeedbacks } from './services/api';
 import './App.css';
@@ -47,6 +46,10 @@ function App() {
     }
   };
 
+  const handleFeedbacksDeleted = () => {
+    fetchFeedbacks(); // Refresh the data after deletion
+  };
+
   const renderContent = () => {
     if (loading) {
       return (
@@ -72,7 +75,10 @@ function App() {
       case 'dashboard':
         return <Dashboard feedbacks={feedbacks} />;
       case 'table':
-        return <FeedbackTable feedbacks={feedbacks} />;
+        return <FeedbackTable 
+          feedbacks={feedbacks}
+          onFeedbacksDeleted={handleFeedbacksDeleted}
+        />;
       case 'stats':
         return <Stats feedbacks={feedbacks} />;
       default:

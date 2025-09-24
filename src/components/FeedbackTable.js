@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { deleteFeedbacks } from '../services/api';
 import './FeedbackTable.css';
 
-const FeedbackTable = ({ feedbacks }) => {
+const FeedbackTable = ({ feedbacks, onFeedbacksDeleted }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState('createdAt');
   const [sortDirection, setSortDirection] = useState('desc');
   const [filterColor, setFilterColor] = useState('all');
+  const [selectedFeedbacks, setSelectedFeedbacks] = useState([]);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const filteredFeedbacks = feedbacks
     .filter(feedback => {
@@ -44,6 +47,46 @@ const FeedbackTable = ({ feedbacks }) => {
     }
   };
 
+  const handleSelectFeedback = (id) => {
+    setSelectedFeedbacks(prev => {
+      if (prev.includes(id)) {
+        return prev.filter(feedbackId => feedbackId !== id);
+      } else {
+        return [...prev, id];
+      }
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (selectedFeedbacks.length === filteredFeedbacks.length) {
+      setSelectedFeedbacks([]);
+    } else {
+      setSelectedFeedbacks(filteredFeedbacks.map(feedback => feedback._id));
+    }
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedFeedbacks.length === 0) return;
+    
+    const confirm = window.confirm(
+      `Are you sure you want to delete ${selectedFeedbacks.length} feedback${selectedFeedbacks.length > 1 ? 's' : ''}?`
+    );
+    
+    if (confirm) {
+      try {
+        setIsDeleting(true);
+        await deleteFeedbacks(selectedFeedbacks);
+        setSelectedFeedbacks([]);
+        if (onFeedbacksDeleted) onFeedbacksDeleted();
+      } catch (error) {
+        console.error('Error deleting feedbacks:', error);
+        alert('Failed to delete feedbacks. Please try again.');
+      } finally {
+        setIsDeleting(false);
+      }
+    }
+  };
+
   return (
     <div className="feedback-table-container">
       <div className="table-controls">
@@ -73,14 +116,32 @@ const FeedbackTable = ({ feedbacks }) => {
         </div>
       </div>
 
-      <div className="table-info">
-        <p>Showing {filteredFeedbacks.length} of {feedbacks.length} feedbacks</p>
+      <div className="table-actions">
+        <div className="table-info">
+          <p>Showing {filteredFeedbacks.length} of {feedbacks.length} feedbacks</p>
+        </div>
+        
+        <button 
+          className={`delete-button ${selectedFeedbacks.length === 0 ? 'disabled' : ''}`}
+          onClick={handleDeleteSelected}
+          disabled={selectedFeedbacks.length === 0 || isDeleting}
+        >
+          {isDeleting ? 'Deleting...' : `Delete Selected (${selectedFeedbacks.length})`}
+        </button>
       </div>
 
       <div className="table-wrapper">
         <table className="feedback-table">
           <thead>
             <tr>
+              <th className="checkbox-cell">
+                <input 
+                  type="checkbox" 
+                  checked={selectedFeedbacks.length === filteredFeedbacks.length && filteredFeedbacks.length > 0}
+                  onChange={handleSelectAll}
+                  className="select-checkbox"
+                />
+              </th>
               <th onClick={() => handleSort('name')} className="sortable">
                 Name {sortField === 'name' && (sortDirection === 'asc' ? '↑' : '↓')}
               </th>
@@ -103,8 +164,16 @@ const FeedbackTable = ({ feedbacks }) => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.05 }}
-                className="feedback-row"
+                className={`feedback-row ${selectedFeedbacks.includes(feedback._id) ? 'selected' : ''}`}
               >
+                <td className="checkbox-cell">
+                  <input 
+                    type="checkbox" 
+                    checked={selectedFeedbacks.includes(feedback._id)}
+                    onChange={() => handleSelectFeedback(feedback._id)}
+                    className="select-checkbox"
+                  />
+                </td>
                 <td className="name-cell">{feedback.name}</td>
                 <td className="email-cell">{feedback.email}</td>
                 <td className="feedback-cell">

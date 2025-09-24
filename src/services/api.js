@@ -29,4 +29,14 @@ export const getFeedbackById = async (id) => {
   }
 };
 
+export const deleteFeedbacks = async (ids) => {
+  try {
+    const response = await api.post('/feedback/delete', { ids });
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error);
+    throw error;
+  }
+};
+
 export default api;
