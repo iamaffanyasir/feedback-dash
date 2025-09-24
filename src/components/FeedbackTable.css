@@ -213,6 +213,35 @@
   background-color: rgba(102, 126, 234, 0.15);
 }
 
+.action-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.export-button {
+  background: linear-gradient(145deg, #4CAF50, #45a049);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+  white-space: nowrap;
+}
+
+.export-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+}
+
+.export-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(76, 175, 80, 0.2);
+}
+
 /* Mobile responsiveness */
 @media (max-width: 768px) {
   .feedback-table-container {
@@ -267,5 +296,17 @@
   .select-checkbox {
     width: 16px;
     height: 16px;
+  }
+  
+  .action-buttons {
+    flex-direction: column-reverse;
+    width: 100%;
+    gap: 10px;
+  }
+  
+  .export-button {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 13px;
   }
 }

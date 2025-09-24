@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { deleteFeedbacks } from '../services/api';
+import ExportOptions from './ExportOptions';
 import './FeedbackTable.css';
 
 const FeedbackTable = ({ feedbacks, onFeedbacksDeleted }) => {
@@ -10,6 +11,7 @@ const FeedbackTable = ({ feedbacks, onFeedbacksDeleted }) => {
   const [filterColor, setFilterColor] = useState('all');
   const [selectedFeedbacks, setSelectedFeedbacks] = useState([]);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showExportOptions, setShowExportOptions] = useState(false);
 
   const filteredFeedbacks = feedbacks
     .filter(feedback => {
@@ -125,13 +127,22 @@ const FeedbackTable = ({ feedbacks, onFeedbacksDeleted }) => {
           <p>Showing {filteredFeedbacks.length} of {feedbacks.length} feedbacks</p>
         </div>
         
-        <button 
-          className={`delete-button ${selectedFeedbacks.length === 0 ? 'disabled' : ''}`}
-          onClick={handleDeleteSelected}
-          disabled={selectedFeedbacks.length === 0 || isDeleting}
-        >
-          {isDeleting ? 'Deleting...' : `Delete Selected (${selectedFeedbacks.length})`}
-        </button>
+        <div className="action-buttons">
+          <button 
+            className="export-button"
+            onClick={() => setShowExportOptions(true)}
+          >
+            📊 Export CSV
+          </button>
+          
+          <button 
+            className={`delete-button ${selectedFeedbacks.length === 0 ? 'disabled' : ''}`}
+            onClick={handleDeleteSelected}
+            disabled={selectedFeedbacks.length === 0 || isDeleting}
+          >
+            {isDeleting ? 'Deleting...' : `Delete Selected (${selectedFeedbacks.length})`}
+          </button>
+        </div>
       </div>
 
       <div className="table-wrapper">
@@ -194,6 +205,36 @@ const FeedbackTable = ({ feedbacks, onFeedbacksDeleted }) => {
                   {new Date(feedback.createdAt).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </td>
+              </motion.tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {filteredFeedbacks.length === 0 && (
+        <div className="no-results">
+          <p>No feedbacks found matching your criteria.</p>
+        </div>
+      )}
+
+      <AnimatePresence>
+        {showExportOptions && (
+          <ExportOptions 
+            feedbacks={filteredFeedbacks}
+            onClose={() => setShowExportOptions(false)}
+          />
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+export default FeedbackTable;
                     day: 'numeric',
                     hour: '2-digit',
                     minute: '2-digit'
