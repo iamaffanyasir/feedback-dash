@@ -11,6 +11,16 @@
   ],
   "routes": [
     {
+      "src": "/api/feedback/delete",
+      "dest": "https://143.244.139.90/api/feedback/delete",
+      "methods": ["POST", "OPTIONS"]
+    },
+    {
+      "src": "/api/deleteFeedbacks",
+      "dest": "https://143.244.139.90/api/deleteFeedbacks",
+      "methods": ["POST", "OPTIONS"]
+    },
+    {
       "handle": "filesystem"
     },
     {

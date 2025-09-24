@@ -31,12 +31,20 @@ export const getFeedbackById = async (id) => {
 
 export const deleteFeedbacks = async (ids) => {
   try {
-    // Debugging logs
+    // Log the request URL and data for debugging
     console.log(`Deleting feedbacks with URL: ${API_BASE_URL}/feedback/delete`);
     console.log('Delete payload:', { ids });
     
-    // Make the request
-    const response = await api.post('/feedback/delete', { ids });
+    // Add a direct endpoint if the /feedback/delete fails
+    let response;
+    try {
+      // Try the regular endpoint
+      response = await api.post('/feedback/delete', { ids });
+    } catch (error) {
+      console.log('First attempt failed, trying alternative endpoint...');
+      // If that fails, try a direct endpoint
+      response = await api.post('/deleteFeedbacks', { ids });
+    }
     
     // Log successful response
     console.log('Delete operation successful:', response.data);
