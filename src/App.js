@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import Dashboard from './components/Dashboard';
 import FeedbackTable from './components/FeedbackTable';
 import Stats from './components/Stats';
+import NotFound from './components/NotFound';
+import Diagnostics from './components/Diagnostics';
 import { getAllFeedbacks } from './services/api';
 import './App.css';
 
@@ -11,6 +13,21 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('dashboard');
+  // For debugging in production
+  const [showDiagnostics, setShowDiagnostics] = useState(false);
+
+  useEffect(() => {
+    // Keyboard shortcut to show diagnostics
+    const handleKeyDown = (e) => {
+      // Ctrl+Shift+D to toggle diagnostics
+      if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+        setShowDiagnostics(prev => !prev);
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   useEffect(() => {
     fetchFeedbacks();
@@ -65,6 +82,7 @@ function App() {
 
   return (
     <div className="app">
+      {showDiagnostics && <Diagnostics />}
       <header className="app-header">
         <h1 className="app-title">Feedback Dashboard</h1>
         <div className="refresh-button-container">

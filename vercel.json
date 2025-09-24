@@ -11,6 +11,13 @@
   ],
   "routes": [
     {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "https://143.244.139.90/api/$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
