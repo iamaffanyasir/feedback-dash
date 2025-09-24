@@ -31,6 +31,10 @@ export const getFeedbackById = async (id) => {
 
 export const deleteFeedbacks = async (ids) => {
   try {
+    // Log the request URL and data for debugging
+    console.log(`Deleting feedbacks with URL: ${API_BASE_URL}/feedback/delete`);
+    console.log('Delete payload:', { ids });
+    
     const response = await api.post('/feedback/delete', { ids });
     return response.data;
   } catch (error) {

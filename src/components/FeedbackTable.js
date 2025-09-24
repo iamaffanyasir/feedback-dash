@@ -75,7 +75,11 @@ const FeedbackTable = ({ feedbacks, onFeedbacksDeleted }) => {
     if (confirm) {
       try {
         setIsDeleting(true);
+        console.log('Deleting feedbacks:', selectedFeedbacks);
+        
         await deleteFeedbacks(selectedFeedbacks);
+        console.log('Delete operation completed');
+        
         setSelectedFeedbacks([]);
         if (onFeedbacksDeleted) onFeedbacksDeleted();
       } catch (error) {
