@@ -79,6 +79,9 @@ const FeedbackTable = ({ feedbacks, onFeedbacksDeleted }) => {
         setIsDeleting(true);
         console.log('Deleting feedbacks:', selectedFeedbacks);
         
+        // Add URL check for debugging
+        console.log('API URL:', process.env.REACT_APP_API_URL);
+        
         await deleteFeedbacks(selectedFeedbacks);
         console.log('Delete operation completed');
         
@@ -86,7 +89,19 @@ const FeedbackTable = ({ feedbacks, onFeedbacksDeleted }) => {
         if (onFeedbacksDeleted) onFeedbacksDeleted();
       } catch (error) {
         console.error('Error deleting feedbacks:', error);
-        alert('Failed to delete feedbacks. Please try again.');
+        
+        // More user-friendly error message
+        let errorMessage = 'Failed to delete feedbacks. Please try again.';
+        
+        if (error.response && error.response.status === 404) {
+          errorMessage = 'Delete endpoint not found. Please contact the administrator.';
+        } else if (error.response && error.response.data && error.response.data.error) {
+          errorMessage = `Server error: ${error.response.data.error}`;
+        } else if (!navigator.onLine) {
+          errorMessage = 'You appear to be offline. Please check your internet connection.';
+        }
+        
+        alert(errorMessage);
       } finally {
         setIsDeleting(false);
       }
