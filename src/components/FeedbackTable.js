@@ -235,24 +235,3 @@ const FeedbackTable = ({ feedbacks, onFeedbacksDeleted }) => {
 };
 
 export default FeedbackTable;
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })}
-                </td>
-              </motion.tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {filteredFeedbacks.length === 0 && (
-        <div className="no-results">
-          <p>No feedbacks found matching your criteria.</p>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default FeedbackTable;
