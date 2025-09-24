@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import Dashboard from './components/Dashboard';
 import FeedbackTable from './components/FeedbackTable';
 import Stats from './components/Stats';
-import NotFound from './components/NotFound';
 import Diagnostics from './components/Diagnostics';
 import { getAllFeedbacks } from './services/api';
 import './App.css';
